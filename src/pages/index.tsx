@@ -74,7 +74,7 @@ const Home: NextPage = () => {
       editTodo();
     } else {
       addTodo();
-    };
+    }
   }
 
   useEffect(() => {
