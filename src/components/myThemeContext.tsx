@@ -2,7 +2,7 @@ import { createContext, ReactElement, useEffect, useState } from "react";
 
 const MyThemeContext = createContext({
   isDarkTheme: true,
-  toggleThemeHandler: () => { },
+  toggleThemeHandler: function() { },
 });
 
 interface ThemePropsInterface {
