@@ -134,7 +134,7 @@ const Home: NextPage = () => {
         <div className="flex justify-center">
           <button
             type="button"
-            className="flex mt-4 border-2 border-slate-300 dark:border-slate-700 rounded-3xl px-2 py-1.5 text-black dark:text-white rounded"
+            className="flex mt-4 border-2 border-slate-300 dark:border-slate-700 rounded-3xl px-2 py-1.5 text-black dark:text-white"
             onClick={toggleThemeHandler}
           >
 
