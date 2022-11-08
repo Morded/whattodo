@@ -172,13 +172,13 @@ const Home: NextPage = () => {
             <div className="flex w-full text-gray-400 dark:text-gray-500 mt-6 w-full">
               <button
                 onClick={() => setShowChecked(false)}
-                className="px-4 w-full font-bold transition-all duration-500 ease-in-out hover:text-purple-600 border-b-2 pb-2 dark:border-gray-700"
+                className="px-4 w-full font-bold transition-all duration-500 ease-in-out hover:text-purple-600 border-b-2 py-2 dark:border-gray-700"
                 style={!showChecked ? listButtonStyle : {}}>
                 Active items ({items.filter(item => item.checked === false).length})
               </button>
               <button
                 onClick={() => setShowChecked(true)}
-                className="px-4 w-full font-bold transition-all duration-500 ease-in-out hover:text-purple-600 border-b-2 pb-2 dark:border-gray-700 hover:border-purple-600"
+                className="px-4 w-full font-bold transition-all duration-500 ease-in-out hover:text-purple-600 border-b-2 py-2 dark:border-gray-700 hover:border-purple-600"
                 style={showChecked ? listButtonStyle : {}}>
                 Checked items ({items.filter(item => item.checked === true).length})
               </button>
