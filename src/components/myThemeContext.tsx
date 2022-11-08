@@ -1,8 +1,11 @@
+import { warn } from "console";
 import { createContext, ReactElement, useEffect, useState } from "react";
 
 const MyThemeContext = createContext({
   isDarkTheme: true,
-  toggleThemeHandler: function() { },
+  /*eslint no-empty-function: ["error", { "allow": ["arrowFunctions"] }]*/
+  /*eslint-env es6*/
+  toggleThemeHandler: () => { },
 });
 
 interface ThemePropsInterface {
