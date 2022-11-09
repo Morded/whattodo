@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { MouseEventHandler, useContext, useEffect, useRef, useState } from "react";
+import { MouseEventHandler, ReactElement, useContext, useEffect, useRef, useState } from "react";
 import { FiCircle, FiCheckCircle, FiEdit2, FiTrash2 } from "react-icons/fi";
 import MyThemeContext from "../components/myThemeContext";
 import { getCookie, setCookie } from 'cookies-next';
@@ -216,36 +216,14 @@ const Home: NextPage = () => {
 
               }
 
-              <div className="flex gap-2 flex-col w-full">
-                {
-                  items?.filter(item => item.checked === showChecked).map(item => (
-                    // <div key={item.id} className="border border-gray-200 dark:border-gray-700 rounded p-2 justify-between flex items-start relative item-hover transition-all duration-100 ease-in-out"
-                    <div key={item.id} className={`${item.id === editItem ? 'hover-effect' : ''} border border-gray-200 dark:border-gray-700 rounded p-2 justify-between flex items-start relative item-hover transition-all duration-100 ease-in-out`}
-                      style={{ textDecorationLine: item.checked ? "line-through" : 'none' }}>
-                      <div className="flex gap-3">
-                        <button onClick={() => toggleCheck(item.id)} className="text-md hover:text-purple-400 px-2 self-start pt-1">
-                          {item.checked
-                            ? <FiCheckCircle />
-                            : <FiCircle />
-                          }
-                        </button>
-                        <p className="first-letter:uppercase break-word">{item.text}</p>
-                      </div>
-                      <div className="flex sm:gap-3 self-start pt-1">
-                        <button onClick={() => setEditItem(item.id)} className="text-sm hover:text-purple-400 px-2">
-                          <FiEdit2 />
-                        </button>
-                        <button onClick={() => removeItem(item.id)} className="text-sm hover:text-purple-400 px-2">
-                          <FiTrash2 />
-                        </button>
-
-                      </div>
-
-
-                    </div>
-                  ))
-                }
-              </div>
+              <Items
+                items={items}
+                showChecked={showChecked}
+                editItem={editItem}
+                toggleCheck={toggleCheck}
+                setEditItem={setEditItem}
+                removeItem={removeItem}
+              />
             </div>
           </div>
         </div>
@@ -272,5 +250,66 @@ const StatusButton = ({ title, onClick, showChecked, count }: StatusButtonProps)
       style={showChecked ? listButtonStyle : {}}>
       {title} ({count | 0})
     </button>
+  )
+}
+
+type ActionIconProps = {
+  onClick: MouseEventHandler<HTMLButtonElement>;
+  icon: ReactElement;
+  mediumSize?: boolean;
+}
+
+const ActionIcon = ({ onClick, icon, mediumSize }: ActionIconProps) => {
+  return (
+    <button onClick={onClick} className={`${mediumSize ? 'text-md pt-1' : 'text-sm'} hover:text-purple-400 px-2 self-start`}>
+      {icon}
+    </button>
+  )
+}
+
+type ItemsProps = {
+  items: { id: number; text: string; checked: boolean }[];
+  showChecked: boolean;
+  editItem: number;
+  toggleCheck: (id: number) => void;
+  setEditItem: (id: number) => void;
+  removeItem: (id: number) => void;
+}
+
+const Items = ({ items, showChecked, editItem, toggleCheck, setEditItem, removeItem }: ItemsProps) => {
+  return (
+    < div className="flex gap-2 flex-col w-full" >
+      {
+        items?.filter(item => item.checked === showChecked).map(item => (
+          <div key={item.id} className={`${item.id === editItem ? 'hover-effect' : ''} border border-gray-200 dark:border-gray-700 rounded p-2 justify-between flex items-start relative item-hover transition-all duration-100 ease-in-out`}
+            style={{ textDecorationLine: item.checked ? "line-through" : 'none' }}>
+            <div className="flex gap-3">
+              <ActionIcon
+                onClick={() => toggleCheck(item.id)}
+                icon={item.checked
+                  ? <FiCheckCircle />
+                  : <FiCircle />
+                }
+                mediumSize={true}
+              />
+              <p className="first-letter:uppercase break-all sm:break-word">{item.text}</p>
+            </div>
+            <div className="flex sm:gap-3 self-start pt-1">
+              <ActionIcon
+                onClick={() => setEditItem(item.id)}
+                icon={<FiEdit2 />}
+              />
+              <ActionIcon
+                onClick={() => removeItem(item.id)}
+                icon={<FiTrash2 />}
+              />
+
+            </div>
+
+
+          </div>
+        ))
+      }
+    </div >
   )
 }
