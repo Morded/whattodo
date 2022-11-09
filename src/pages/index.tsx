@@ -14,7 +14,7 @@ const Home: NextPage = () => {
   const todoInput = useRef<HTMLInputElement>(null);
   const todoButton = useRef<HTMLButtonElement>(null);
 
-  const setLocalStorageItems = (items: { id: number; text: string; checked: boolean }[]) => {
+  const doSetCookie = (items: { id: number; text: string; checked: boolean }[]) => {
     // localStorage.setItem('items', JSON.stringify(items));
     setCookie('items', items, { sameSite: 'lax' });
   }
@@ -28,7 +28,7 @@ const Home: NextPage = () => {
     setMaxId(maxId + 1);
     todoInput.current.value = '';
 
-    setLocalStorageItems(updatedItems);
+    doSetCookie(updatedItems);
   }
 
   const editTodo = () => {
@@ -50,7 +50,7 @@ const Home: NextPage = () => {
     setItems(updatedItems);
     todoInput.current.value = '';
     setEditItem(-1);
-    setLocalStorageItems(updatedItems);
+    doSetCookie(updatedItems);
   }
 
   const handleTodo = (e: React.ChangeEvent<HTMLFormElement>) => {
@@ -64,11 +64,18 @@ const Home: NextPage = () => {
   }
 
   useEffect(() => {
-    const items2 = getCookie('items');
+    const itemsString = getCookie('items');
 
-    if (typeof items2 !== 'undefined') {
-      console.table(JSON.parse(items2!.toString()));
-      setItems(JSON.parse(items2!.toString()));
+    if (typeof itemsString !== 'undefined') {
+      const itemsArray: { id: number; text: string; checked: boolean }[] = JSON.parse(itemsString!.toString());
+
+      let max = -1;
+      itemsArray.map(item => {
+        if (max < item.id) max = item.id
+      })
+
+      setItems(itemsArray);
+      setMaxId(max + 1);
     }
   }, [])
 
@@ -91,25 +98,25 @@ const Home: NextPage = () => {
       }
     })
     setItems(updatedItems);
-    setLocalStorageItems(updatedItems);
+    doSetCookie(updatedItems);
   };
 
   const toggleAll = () => {
     const updatedItems = items.map(item => ({ id: item.id, text: item.text, checked: !showChecked }));
     setItems(updatedItems);
-    setLocalStorageItems(updatedItems);
+    doSetCookie(updatedItems);
   }
 
   const removeAll = () => {
     const updatedItems = items.filter(item => item.checked !== showChecked);
     setItems(updatedItems);
-    setLocalStorageItems(updatedItems);
+    doSetCookie(updatedItems);
   }
 
   const removeItem = (id: number) => {
     const updatedItems = items.filter(item => item.id !== id);
     setItems(updatedItems);
-    setLocalStorageItems(updatedItems);
+    doSetCookie(updatedItems);
   }
 
   return (
