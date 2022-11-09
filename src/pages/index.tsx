@@ -32,7 +32,7 @@ const Home: NextPage = () => {
   const addTodo = () => {
     if (todoInput.current === null || todoInput.current.value === '') return
 
-    let updatedItems = items ? items.slice(0) : []
+    const updatedItems = items ? items.slice(0) : []
     updatedItems.push({ id: maxId, text: todoInput.current.value, checked: false });
     setItems(updatedItems);
     setMaxId(maxId + 1);
