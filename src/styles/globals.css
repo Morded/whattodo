@@ -3,8 +3,12 @@
 @tailwind utilities;
 
 input[type="text"]:focus,
-textarea,
+textarea[type="text"]:focus,
 .item-hover:hover {
+  @apply hover-effect;
+}
+
+.hover-effect {
   box-shadow: 0 0 5px #9333ea;
   border: 1px solid #9333ea;
 }

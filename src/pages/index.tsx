@@ -32,7 +32,8 @@ const Home: NextPage = () => {
   const addTodo = () => {
     if (todoInput.current === null || todoInput.current.value === '') return
 
-    const updatedItems = [...items, { id: maxId, text: todoInput.current.value, checked: false }];
+    let updatedItems = items ? items.slice(0) : []
+    updatedItems.push({ id: maxId, text: todoInput.current.value, checked: false });
     setItems(updatedItems);
     setMaxId(maxId + 1);
     todoInput.current.value = '';
@@ -73,20 +74,21 @@ const Home: NextPage = () => {
   }
 
   useEffect(() => {
-    const saved = localStorage.getItem('todos');
-
-    if (saved) {
-      setSavedItems(saved);
-    }
-
-    // TODO: Need to figure out how to save data on reload
     const localItems = JSON.parse(window.localStorage.getItem('items')!);
 
+    let max = -1;
+    localItems.map((item: any) => {
+      if (max < item.id) {
+        max = item.id
+      }
+    })
+
+    setMaxId(max + 1);
     setItems(localItems);
   }, [])
 
   useEffect(() => {
-    items.map(item => {
+    items?.map(item => {
       if (item.id === editItem) {
         todoInput.current &&
           (todoInput.current.value = item.text);
@@ -179,13 +181,13 @@ const Home: NextPage = () => {
                 onClick={() => setShowChecked(false)}
                 className="px-4 w-full font-bold transition-all duration-500 ease-in-out hover:text-purple-600 border-b-2 py-2 dark:border-gray-700"
                 style={!showChecked ? listButtonStyle : {}}>
-                Active items ({items.filter(item => item.checked === false).length})
+                Active items ({items?.filter(item => item.checked === false).length})
               </button>
               <button
                 onClick={() => setShowChecked(true)}
                 className="px-4 w-full font-bold transition-all duration-500 ease-in-out hover:text-purple-600 border-b-2 py-2 dark:border-gray-700 hover:border-purple-600"
                 style={showChecked ? listButtonStyle : {}}>
-                Checked items ({items.filter(item => item.checked === true).length})
+                Checked items ({items?.filter(item => item.checked === true).length})
               </button>
             </div>
 
@@ -217,11 +219,11 @@ const Home: NextPage = () => {
 
               }
 
-
               <div className="flex gap-2 flex-col w-full">
                 {
                   items?.filter(item => item.checked === showChecked).map(item => (
-                    <div key={item.id} className="border border-gray-200 dark:border-gray-700 rounded p-2 justify-between flex items-start relative item-hover transition-all duration-100 ease-in-out"
+                    // <div key={item.id} className="border border-gray-200 dark:border-gray-700 rounded p-2 justify-between flex items-start relative item-hover transition-all duration-100 ease-in-out"
+                    <div key={item.id} className={`${item.id === editItem ? 'hover-effect' : ''} border border-gray-200 dark:border-gray-700 rounded p-2 justify-between flex items-start relative item-hover transition-all duration-100 ease-in-out`}
                       style={{ textDecorationLine: item.checked ? "line-through" : 'none' }}>
                       <div className="flex gap-3">
                         <button onClick={() => toggleCheck(item.id)} className="text-md hover:text-purple-400 px-2 self-start pt-1">
@@ -257,4 +259,5 @@ const Home: NextPage = () => {
 };
 
 export default Home;
+
 
