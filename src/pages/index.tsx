@@ -77,7 +77,7 @@ const Home: NextPage = () => {
   }
 
   useEffect(() => {
-    let items2 = getCookie('items');
+    const items2 = getCookie('items');
 
     if (typeof items2 !== 'undefined') {
       console.table(JSON.parse(items2!.toString()));
