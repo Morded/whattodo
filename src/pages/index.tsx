@@ -3,6 +3,8 @@ import Head from "next/head";
 import { useContext, useEffect, useRef, useState } from "react";
 import { FiCircle, FiCheckCircle, FiEdit2, FiTrash2 } from "react-icons/fi";
 import MyThemeContext from "../components/myThemeContext";
+import { getCookie, setCookie } from 'cookies-next';
+
 
 const listButtonStyle = {
   color: "#9333ea",
@@ -24,8 +26,10 @@ const Home: NextPage = () => {
     themeCtx.toggleThemeHandler();
   }
 
+
   const setLocalStorageItems = (items: { id: number; text: string; checked: boolean }[]) => {
-    localStorage.setItem('items', JSON.stringify(items));
+    // localStorage.setItem('items', JSON.stringify(items));
+    setCookie('items', items, { sameSite: 'lax' });
   }
 
   const addTodo = () => {
@@ -73,18 +77,27 @@ const Home: NextPage = () => {
   }
 
   useEffect(() => {
+    let items2 = getCookie('items');
+
+    if (typeof items2 !== 'undefined') {
+      console.table(JSON.parse(items2!.toString()));
+      setItems(JSON.parse(items2!.toString()));
+    }
+
+
+
     // if (typeof window !== 'undefined') {
-    // const localItems = JSON.parse(window.localStorage.getItem('items')!);
+    //   const localItems = JSON.parse(window.localStorage.getItem('items')!);
 
-    // let max = -1;
-    // localItems.map((item: any) => {
-    //   if (max < item.id) {
-    //     max = item.id
-    //   }
-    // })
+    //   let max = -1;
+    //   localItems.map((item: any) => {
+    //     if (max < item.id) {
+    //       max = item.id
+    //     }
+    //   })
 
-    // setMaxId(max + 1);
-    // setItems(localItems);
+    //   setMaxId(max + 1);
+    //   setItems(localItems);
     // }
   }, [])
 
