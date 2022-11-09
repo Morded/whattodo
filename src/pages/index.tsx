@@ -73,19 +73,19 @@ const Home: NextPage = () => {
   }
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const localItems = JSON.parse(window.localStorage.getItem('items')!);
+    // if (typeof window !== 'undefined') {
+    // const localItems = JSON.parse(window.localStorage.getItem('items')!);
 
-      let max = -1;
-      localItems.map((item: any) => {
-        if (max < item.id) {
-          max = item.id
-        }
-      })
+    // let max = -1;
+    // localItems.map((item: any) => {
+    //   if (max < item.id) {
+    //     max = item.id
+    //   }
+    // })
 
-      setMaxId(max + 1);
-      setItems(localItems);
-    }
+    // setMaxId(max + 1);
+    // setItems(localItems);
+    // }
   }, [])
 
   useEffect(() => {
