@@ -11,7 +11,6 @@ const listButtonStyle = {
 }
 
 const Home: NextPage = () => {
-  const [savedItems, setSavedItems] = useState(typeof window !== 'undefined' ? localStorage.getItem('items') : []);
   const [items, setItems] = useState<{ id: number; text: string; checked: boolean }[]>([]);
   const [editItem, setEditItem] = useState<number>(-1);
   const [showChecked, setShowChecked] = useState<boolean>(false);
@@ -74,17 +73,19 @@ const Home: NextPage = () => {
   }
 
   useEffect(() => {
-    const localItems = JSON.parse(window.localStorage.getItem('items')!);
+    if (typeof window !== 'undefined') {
+      const localItems = JSON.parse(window.localStorage.getItem('items')!);
 
-    let max = -1;
-    localItems.map((item: any) => {
-      if (max < item.id) {
-        max = item.id
-      }
-    })
+      let max = -1;
+      localItems.map((item: any) => {
+        if (max < item.id) {
+          max = item.id
+        }
+      })
 
-    setMaxId(max + 1);
-    setItems(localItems);
+      setMaxId(max + 1);
+      setItems(localItems);
+    }
   }, [])
 
   useEffect(() => {
