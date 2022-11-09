@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { useContext, useEffect, useRef, useState } from "react";
+import { MouseEventHandler, useContext, useEffect, useRef, useState } from "react";
 import { FiCircle, FiCheckCircle, FiEdit2, FiTrash2 } from "react-icons/fi";
 import MyThemeContext from "../components/myThemeContext";
 import { getCookie, setCookie } from 'cookies-next';
@@ -25,7 +25,6 @@ const Home: NextPage = () => {
   function toggleThemeHandler(): void {
     themeCtx.toggleThemeHandler();
   }
-
 
   const setLocalStorageItems = (items: { id: number; text: string; checked: boolean }[]) => {
     // localStorage.setItem('items', JSON.stringify(items));
@@ -83,22 +82,6 @@ const Home: NextPage = () => {
       console.table(JSON.parse(items2!.toString()));
       setItems(JSON.parse(items2!.toString()));
     }
-
-
-
-    // if (typeof window !== 'undefined') {
-    //   const localItems = JSON.parse(window.localStorage.getItem('items')!);
-
-    //   let max = -1;
-    //   localItems.map((item: any) => {
-    //     if (max < item.id) {
-    //       max = item.id
-    //     }
-    //   })
-
-    //   setMaxId(max + 1);
-    //   setItems(localItems);
-    // }
   }, [])
 
   useEffect(() => {
@@ -191,18 +174,18 @@ const Home: NextPage = () => {
             </div>
 
             <div className="flex w-full text-gray-400 dark:text-gray-500 mt-6 w-full">
-              <button
+              <StatusButton
+                title="Active items"
                 onClick={() => setShowChecked(false)}
-                className="px-4 w-full font-bold transition-all duration-500 ease-in-out hover:text-purple-600 border-b-2 py-2 dark:border-gray-700"
-                style={!showChecked ? listButtonStyle : {}}>
-                Active items ({items?.filter(item => item.checked === false).length})
-              </button>
-              <button
+                showChecked={!showChecked}
+                count={items?.filter(item => item.checked === false).length}
+              />
+              <StatusButton
+                title="Checked items"
                 onClick={() => setShowChecked(true)}
-                className="px-4 w-full font-bold transition-all duration-500 ease-in-out hover:text-purple-600 border-b-2 py-2 dark:border-gray-700 hover:border-purple-600"
-                style={showChecked ? listButtonStyle : {}}>
-                Checked items ({items?.filter(item => item.checked === true).length})
-              </button>
+                showChecked={showChecked}
+                count={items?.filter(item => item.checked === true).length}
+              />
             </div>
 
             <div className="flex flex-col gap-4 w-full justify-center border p-2 border-gray-200 dark:border-gray-700 rounded">
@@ -274,4 +257,20 @@ const Home: NextPage = () => {
 
 export default Home;
 
+type StatusButtonProps = {
+  title: string;
+  onClick: MouseEventHandler<HTMLButtonElement>;
+  showChecked: boolean;
+  count: number;
+}
 
+const StatusButton = ({ title, onClick, showChecked, count }: StatusButtonProps) => {
+  return (
+    <button
+      onClick={onClick}
+      className="px-4 w-full font-bold transition-all duration-500 ease-in-out hover:text-purple-600 border-b-2 py-2 dark:border-gray-700 hover:border-purple-600"
+      style={showChecked ? listButtonStyle : {}}>
+      {title} ({count | 0})
+    </button>
+  )
+}
