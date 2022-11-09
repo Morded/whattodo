@@ -1,16 +1,10 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { MouseEventHandler, ReactElement, useContext, useEffect, useRef, useState } from "react";
-import { FiCircle, FiCheckCircle, FiEdit2, FiTrash2 } from "react-icons/fi";
-import MyThemeContext from "../components/myThemeContext";
+import { useEffect, useRef, useState } from "react";
 import { getCookie, setCookie } from 'cookies-next';
-
-
-const listButtonStyle = {
-  color: "#9333ea",
-  cursor: "default",
-  borderColor: "#9333ea"
-}
+import { StatusButton, HeaderActionButtons } from "../components/buttons"
+import Items from "../components/items"
+import ThemeSwitch from "../components/theme"
 
 const Home: NextPage = () => {
   const [items, setItems] = useState<{ id: number; text: string; checked: boolean }[]>([]);
@@ -19,12 +13,6 @@ const Home: NextPage = () => {
   const [maxId, setMaxId] = useState<number>(0);
   const todoInput = useRef<HTMLInputElement>(null);
   const todoButton = useRef<HTMLButtonElement>(null);
-  const themeCtx: { isDarkMode?: boolean; toggleThemeHandler: () => void } =
-    useContext(MyThemeContext);
-
-  function toggleThemeHandler(): void {
-    themeCtx.toggleThemeHandler();
-  }
 
   const setLocalStorageItems = (items: { id: number; text: string; checked: boolean }[]) => {
     // localStorage.setItem('items', JSON.stringify(items));
@@ -132,29 +120,8 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-
       <main className="w-full min-h-screen bg-violet-50 dark:bg-slate-800">
-
-        <div className="flex justify-center">
-          <button
-            type="button"
-            className="flex mt-4 border-2 border-slate-300 dark:border-slate-700 rounded-3xl px-2 py-1.5 text-black dark:text-white"
-            onClick={toggleThemeHandler}
-          >
-
-            <div className="opacity-100 dark:opacity-0 fill-slate-800 w-4" >
-              <svg viewBox="0 0 17 16" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7.914 0a6.874 6.874 0 0 0-1.26 3.972c0 3.875 3.213 7.017 7.178 7.017.943 0 1.843-.178 2.668-.5C15.423 13.688 12.34 16 8.704 16 4.174 16 .5 12.41.5 7.982.5 3.814 3.754.389 7.914 0z" fillRule="evenodd"></path>
-              </svg>
-            </div>
-            <div className="opacity-0 dark:opacity-100 fill-yellow-200 w-4" >
-              <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3.828 5.243L2.343 3.757a1 1 0 0 1 1.414-1.414l1.486 1.485a5.027 5.027 0 0 0-1.415 1.415zM7 3.1V1a1 1 0 1 1 2 0v2.1a5.023 5.023 0 0 0-2 0zm3.757.728l1.486-1.485a1 1 0 1 1 1.414 1.414l-1.485 1.486a5.027 5.027 0 0 0-1.415-1.415zM12.9 7H15a1 1 0 0 1 0 2h-2.1a5.023 5.023 0 0 0 0-2zm-.728 3.757l1.485 1.486a1 1 0 1 1-1.414 1.414l-1.486-1.485a5.027 5.027 0 0 0 1.415-1.415zM9 12.9V15a1 1 0 0 1-2 0v-2.1a5.023 5.023 0 0 0 2 0zm-3.757-.728l-1.486 1.485a1 1 0 0 1-1.414-1.414l1.485-1.486a5.027 5.027 0 0 0 1.415 1.415zM3.1 9H1a1 1 0 1 1 0-2h2.1a5.023 5.023 0 0 0 0 2zM8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" fillRule="evenodd"></path>
-              </svg>
-            </div>
-          </button>
-        </div>
-
+        <ThemeSwitch />
 
         <div className="container mx-auto min-h-screen flex justify-center">
           <div className="flex  text-gray-700 dark:text-white flex-col items-center w-full lg:w-3/4 gap-4 p-5 mt-10">
@@ -189,32 +156,13 @@ const Home: NextPage = () => {
             </div>
 
             <div className="flex flex-col gap-4 w-full justify-center border p-2 border-gray-200 dark:border-gray-700 rounded">
-              {
-                items && (items.filter(item => item.checked === showChecked).length === 0)
-                  ?
-                  <div className="text-center mt-2 p-4 text-gray-500">
-                    No items found.
-                  </div>
-                  : <div className="flex gap-2 mt-2 place-content-between">
-                    <button onClick={() => toggleAll()} className="flex items-center gap-2 py-0.5 px-4 text-sm text-gray-800 dark:text-gray-100 hover:translate-y-1 transition-all duration-300 ease-in-out">
-                      {!showChecked
-                        ? <>
-                          <FiCheckCircle />
-                          Check all
-                        </>
-                        : <>
-                          <FiCircle />
-                          Uncheck all
-                        </>
-                      }
-                    </button>
-                    <button onClick={() => removeAll()} className="flex items-center gap-2 py-0.5 px-4 text-sm text-red-600 hover:translate-y-1 transition-all duration-300 ease-in-out">
-                      <FiTrash2 />
-                      Delete all
-                    </button>
-                  </div>
 
-              }
+              <HeaderActionButtons
+                items={items}
+                showChecked={showChecked}
+                toggleAll={toggleAll}
+                removeAll={removeAll}
+              />
 
               <Items
                 items={items}
@@ -235,81 +183,3 @@ const Home: NextPage = () => {
 
 export default Home;
 
-type StatusButtonProps = {
-  title: string;
-  onClick: MouseEventHandler<HTMLButtonElement>;
-  showChecked: boolean;
-  count: number;
-}
-
-const StatusButton = ({ title, onClick, showChecked, count }: StatusButtonProps) => {
-  return (
-    <button
-      onClick={onClick}
-      className="px-4 w-full font-bold transition-all duration-500 ease-in-out hover:text-purple-600 border-b-2 py-2 dark:border-gray-700 hover:border-purple-600"
-      style={showChecked ? listButtonStyle : {}}>
-      {title} ({count | 0})
-    </button>
-  )
-}
-
-type ActionIconProps = {
-  onClick: MouseEventHandler<HTMLButtonElement>;
-  icon: ReactElement;
-  mediumSize?: boolean;
-}
-
-const ActionIcon = ({ onClick, icon, mediumSize }: ActionIconProps) => {
-  return (
-    <button onClick={onClick} className={`${mediumSize ? 'text-md pt-1' : 'text-sm'} hover:text-purple-400 px-2 self-start`}>
-      {icon}
-    </button>
-  )
-}
-
-type ItemsProps = {
-  items: { id: number; text: string; checked: boolean }[];
-  showChecked: boolean;
-  editItem: number;
-  toggleCheck: (id: number) => void;
-  setEditItem: (id: number) => void;
-  removeItem: (id: number) => void;
-}
-
-const Items = ({ items, showChecked, editItem, toggleCheck, setEditItem, removeItem }: ItemsProps) => {
-  return (
-    < div className="flex gap-2 flex-col w-full" >
-      {
-        items?.filter(item => item.checked === showChecked).map(item => (
-          <div key={item.id} className={`${item.id === editItem ? 'hover-effect' : ''} border border-gray-200 dark:border-gray-700 rounded p-2 justify-between flex items-start relative item-hover transition-all duration-100 ease-in-out`}
-            style={{ textDecorationLine: item.checked ? "line-through" : 'none' }}>
-            <div className="flex gap-3">
-              <ActionIcon
-                onClick={() => toggleCheck(item.id)}
-                icon={item.checked
-                  ? <FiCheckCircle />
-                  : <FiCircle />
-                }
-                mediumSize={true}
-              />
-              <p className="first-letter:uppercase break-all sm:break-word">{item.text}</p>
-            </div>
-            <div className="flex sm:gap-3 self-start pt-1">
-              <ActionIcon
-                onClick={() => setEditItem(item.id)}
-                icon={<FiEdit2 />}
-              />
-              <ActionIcon
-                onClick={() => removeItem(item.id)}
-                icon={<FiTrash2 />}
-              />
-
-            </div>
-
-
-          </div>
-        ))
-      }
-    </div >
-  )
-}
